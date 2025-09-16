@@ -1,0 +1,20 @@
+[build]
+  base    = "kickstart-next"
+  publish = ".next"
+  command = "npm run build"
+
+[functions]
+  directory = "netlify/functions"
+
+[plugins]
+  [[plugins]]
+    package = "@netlify/plugin-nextjs"
+
+# Optional environment variables (if using Contentstack)
+# [build.environment]
+#   NEXT_PUBLIC_CONTENTSTACK_API_KEY = "blt3aa0bc0e92e11bdf"
+#   NEXT_PUBLIC_CONTENTSTACK_DELIVERY_TOKEN = "cs1511b7a59121167bbdddf0b7"
+#   NEXT_PUBLIC_CONTENTSTACK_ENVIRONMENT = "preview"
+#   NEXT_PUBLIC_CONTENTSTACK_PREVIEW = "true"
+#   NEXT_PUBLIC_CONTENTSTACK_PREVIEW_TOKEN = "cs338b85ece6602dcfcc2b120c"
+#   NEXT_PUBLIC_CONTENTSTACK_REGION = "NA"  # or your region
