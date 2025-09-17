@@ -87,4 +87,15 @@ export interface Blog {
   uid: string;
   url?: string;
 }
+// types/accordion.ts
+// types.ts
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
 
+export interface Accordion {
+  title: string;
+  description?: string;
+  faq_items: FaqItem[];
+}

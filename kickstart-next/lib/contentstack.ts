@@ -1,6 +1,6 @@
 // Importing Contentstack SDK and specific types for region and query operations
 import contentstack, { QueryOperation } from "@contentstack/delivery-sdk";
-
+import { Accordion } from "./types";
 // Importing Contentstack Live Preview utilities and stack SDK 
 import ContentstackLivePreview, { IStackSdk } from "@contentstack/live-preview-utils";
 
@@ -110,4 +110,40 @@ export const getBlogEntries = async () => {
     .find<Blog>();
 
   return result.entries ?? [];
+};
+
+
+
+
+
+export const getAccordion = async (): Promise<Accordion | null> => {
+  try {
+    const result = await stack
+      .contentType("accordion")
+      .entry()
+      .query()
+      .find<any>();
+
+    const entry = result.entries?.[0];
+    if (!entry) return null;
+
+    // Ensure faq_items is always an array
+    const faqItems = Array.isArray(entry.faq_items)
+      ? entry.faq_items
+      : entry.faq_items
+      ? [entry.faq_items]
+      : [];
+
+    return {
+      title: entry.title,
+      description: entry.description || "",
+      faq_items: faqItems.map((item: any) => ({
+        question: item.question,
+        answer: item.answer,
+      })),
+    };
+  } catch (error) {
+    console.error("Error fetching accordion:", error);
+    return null;
+  }
 };
