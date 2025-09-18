@@ -3,36 +3,43 @@
 import DOMPurify from "dompurify";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { getPage, initLivePreview } from "@/lib/contentstack";
+import { getBtestenties, getPage, initLivePreview } from "@/lib/contentstack";
 import { Page } from "@/lib/types";
 import ContentstackLivePreview, { VB_EmptyBlockParentClass } from "@contentstack/live-preview-utils";
-
+import Custo from "@/components/test";
+import { testt } from "@/lib/types";
 // 👇 Import Accordion + type + data helper
 import Accordion from "@/components/Accordion";
 import { getAccordion } from "@/lib/contentstack";
 import { Accordion as AccordionType } from "@/lib/types";
 
 export default function Home() {
-  const [page, setPage] = useState<Page>();
-  const [accordionData, setAccordionData] = useState<AccordionType | null>(null);
+    const [page, setPage] = useState<Page>();
+    const [accordionData, setAccordionData] = useState<AccordionType | null>(null); // this is
+    const [news,setnews] = useState<testt[]>([]);
 
-  const getContent = async () => {
-    const pageData = await getPage("/");
-    setPage(pageData);
+    const getContent = async () => {
+          const pageData = await getPage("/");
+          setPage(pageData);
 
-    const accData = await getAccordion();
-    setAccordionData(accData);
+          const accData = await getAccordion();
+          setAccordionData(accData);
+
+          const newsdata = await getBtestenties();
+          setnews(newsdata);
   };
 
-  useEffect(() => {
-    initLivePreview();
-    ContentstackLivePreview.onEntryChange(getContent);
-    getContent();
-  }, []);
+         useEffect(() => {
+           initLivePreview();
+           ContentstackLivePreview.onEntryChange(getContent);
+           getContent();
+         }, 
+         []);
 
   return (
     <main className="max-w-(--breakpoint-md) mx-auto">
       <section className="p-4">
+        
         {page?.title && (
           <h1 className="text-4xl font-bold mb-4 text-center" {...(page?.$ && page?.$.title)}>
             {page.title} with Next
@@ -45,16 +52,7 @@ export default function Home() {
           </p>
         )}
 
-        {page?.image && (
-          <Image
-            className="mb-4"
-            width={768}
-            height={414}
-            src={page.image.url}
-            alt={page.image.title}
-            {...(page?.image?.$ && page.image.$.url)}
-          />
-        )}
+        
 
         {page?.rich_text && (
           <div
@@ -63,63 +61,38 @@ export default function Home() {
           />
         )}
 
-        <div
-          className={`space-y-8 max-w-full mt-4 ${
-            !page?.blocks || page.blocks.length === 0 ? VB_EmptyBlockParentClass : ""
-          }`}
-          {...(page?.$ && page?.$.blocks)}
-        >
-          {page?.blocks?.map((item, index) => {
-            const { block } = item;
-            const isImageLeft = block.layout === "image_left";
 
-            return (
-              <div
-                key={block._metadata.uid}
-                {...(page?.$ && page.$[`blocks__${index}`])}
-                className={`flex flex-col md:flex-row items-center space-y-4 md:space-y-0 bg-white ${
-                  isImageLeft ? "md:flex-row" : "md:flex-row-reverse"
-                }`}
-              >
-                <div className="w-full md:w-1/2">
-                  {block.image && (
-                    <Image
-                      key={`image-${block._metadata.uid}`}
-                      src={block.image.url}
-                      alt={block.image.title}
-                      width={200}
-                      height={112}
-                      className="w-full"
-                      {...(block?.$ && block.$.image)}
-                    />
-                  )}
-                </div>
-                <div className="w-full md:w-1/2 p-4">
-                  {block.title && (
-                    <h2 className="text-2xl font-bold" {...(block?.$ && block.$.title)}>
-                      {block.title}
-                    </h2>
-                  )}
-                  {block.copy && (
-                    <div
-                      className="prose"
-                      {...(block?.$ && block.$.copy)}
-                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(block.copy) }}
-                    />
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+       
+        
+{/* // this will show only latest {news.length > 0 && <Custo news={news[0]} />} */}
 
-        {/* 👇 Accordion section */}
         {accordionData && (
           <div className="mt-12">
             <Accordion data={accordionData} />
           </div>
         )}
+
+        
       </section>
+
+      <section className="max-w-7xl mx-auto px-4 py-12">
+      <h2 className="text-3xl font-bold mb-8 text-center text-gray-900">
+       Latest News
+      </h2>
+
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {news.map((item, index) => (
+      <div
+        key={index}
+        className="bg-white  shadow-md hover:shadow-xl transition duration-300 overflow-hidden p-6"
+      >
+        <Custo news={item} />
+      </div>
+      ))}
+      </div>
+    </section>
+
+      
     </main>
   );
 }

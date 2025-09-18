@@ -99,3 +99,8 @@ export interface Accordion {
   description?: string;
   faq_items: FaqItem[];
 }
+
+export interface testt{
+  titles : string;
+  text : string;
+}

@@ -7,7 +7,7 @@ import ContentstackLivePreview, { IStackSdk } from "@contentstack/live-preview-u
 // Importing the Page type definition 
 import { Page } from "./types";
 import { Blog } from "./types"; // or "@/types" if alias wor
-
+import {testt} from "./types";
 // helper functions from private package to retrieve Contentstack endpoints in a convienient way
 import { getContentstackEndpoints, getRegionForString } from "@timbenniks/contentstack-endpoints";
 
@@ -108,6 +108,15 @@ export const getBlogEntries = async () => {
     .entry()
     .query()
     .find<Blog>();
+
+  return result.entries ?? [];
+};
+export const getBtestenties = async () => {
+  const result = await stack
+    .contentType("testt")
+    .entry()
+    .query()
+    .find<testt>();
 
   return result.entries ?? [];
 };
